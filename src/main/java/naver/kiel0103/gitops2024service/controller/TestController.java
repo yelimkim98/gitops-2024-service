@@ -14,4 +14,9 @@ public class TestController {
     ) {
         return ResponseEntity.ok(input.toLowerCase());
     }
+
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("healthy");
+    }
 }
