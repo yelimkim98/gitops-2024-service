@@ -1,0 +1,45 @@
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  build-docker-image:
+    runs-on: 'ubuntu-22.04'
+    steps:
+      - uses: 'actions/checkout@v4'
+
+      - name: 'Set Up JDK 17'
+        uses: 'actions/setup-java@v4'
+        with:
+          distribution: 'corretto'
+          java-version: 17
+
+      - name: 'Setup Gradle'
+        uses: 'gradle/actions/setup-gradle@v4'
+
+      - name: 'Build with Gradle'
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build
+
+      - name: 'Set short SHA'
+        run: echo "SHORT_SHA=${{ github.sha }}" | cut -c1-7 >> $GITHUB_ENV
+
+      - name: 'Print SHORT_SHA'
+        run: echo "Short SHA is $SHORT_SHA"
+
+      - name: 'Login to DockerHub'
+        uses: 'docker/login-action@v1'
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: 'DockerHub Upload'
+        id: 'build-image'
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME}}
+          DOCKER_HUB_REPOSITORY: 'gitops-2024-service'
+        run: |
+          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:$SHORT_SHA .
+          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:$SHORT_SHA
+          echo "image=$DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:$SHORT_SHA" >> $GITHUB_OUTPUT
+
