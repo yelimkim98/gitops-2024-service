@@ -23,7 +23,7 @@ jobs:
           ./gradlew clean build
 
       - name: 'Set short SHA'
-        run: echo "SHORT_SHA=${{ github.sha }}" | cut -c1-7 >> $GITHUB_ENV
+        run: echo "SHORT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
 
       - name: 'Print SHORT_SHA'
         run: echo "Short SHA is $SHORT_SHA"
