@@ -46,17 +46,14 @@ jobs:
       - name: 'Checkout Helm Chart Repository'
         uses: 'actions/checkout@v4'
         with:
-          # Helm Chart 저장소 경로
           repository: 'kiel0103/gitops-2024-helm'
-
-          # GITHUB_TOKEN 은 기본적으로 Actions 에서 활성화됨
-          token: ${{ secrets.GITHUB_TOKEN }}
-
+          token: ${{ secrets.HELM_ACCESS_TOKEN }}
           # path :
           # helm-chart 디렉토리에 체크아웃된 파일을 저장하겠다고 지정
           # 즉, kiel0103/gitops-2024-helm 저장소의 내용이
           # helm-chart/ 디렉토리로 복사되게 된다.
           path: 'helm-chart'
+          ref: 'main'
 
       - name: 'Update Helm Chart Values'
         # helm-chart/values.yaml 파일에서
@@ -65,7 +62,7 @@ jobs:
         run: |
           sed -i "s|repository:.*|repository: kiel0103/gitops-2024-service:$SHORT_SHA|g" helm-chart/values.yaml
 
-      - name: 'Update Helm Chart Values'
+      - name: 'Commit and Push Updated Helm Chart'
         run: |
           cd helm-chart
           git config user.name "yelimkim98"
@@ -73,3 +70,5 @@ jobs:
           git add values.yaml
           git commit -m "Update image tag to $SHORT_SHA"
           git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.HELM_ACCESS_TOKEN }}
