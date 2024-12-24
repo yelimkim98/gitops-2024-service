@@ -9,5 +9,4 @@ public class Gitops2024ServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(Gitops2024ServiceApplication.class, args);
     }
-
 }

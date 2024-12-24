@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: 'gitops-2024-service'
