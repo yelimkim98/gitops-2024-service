@@ -46,7 +46,7 @@ jobs:
       - name: 'Checkout Helm Chart Repository'
         uses: 'actions/checkout@v4'
         with:
-          repository: 'kiel0103/gitops-2024-helm'
+          repository: 'yelimkim98/gitops-2024-helm'
           token: ${{ secrets.HELM_ACCESS_TOKEN }}
           # path :
           # helm-chart 디렉토리에 체크아웃된 파일을 저장하겠다고 지정
